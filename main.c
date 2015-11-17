@@ -35,6 +35,15 @@
 
 #define BITS_IN_TRANSMISSION  32 // Needed by both TX and RX
 
+// Test Points
+#define WHITE_TEST_POINT // TX-DATA (TXMOD on TR1000) (U8)
+#define YELLOW_TEST_POINT // RX-DATA (RXDATA on TR1000) (U9)
+#define BLUE_TEST_POINT // P2.2 (U12)
+#define ORANGE_TEST_POINT // T/R (CNTRL1 on TR1000) (U10)
+#define GREEN_TEST_POINT // P2.5 (U11)
+#define PURPLE_TEST_POINT // P2.4 (U13)
+#define BROWN_TEST_POINT // P2.3 (U14)
+
 // **************************************************************************************
 // Function Prototypes Section
 // ************************************************************************************
