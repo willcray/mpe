@@ -1,5 +1,5 @@
 /*
- * tx.c
+ * Ben Browning and Will Cray
  */
 
 // **************************************************************************************
@@ -70,6 +70,8 @@ void Xmit(TransmitterData* TData) {
 //This is called every 500uS by the timer A0 interrupt function
 void txinthandler(void) {
 //Do whatever needs to be done on a periodic basis for tx here:
+// update clock phase
+// interword timeout
 
 }
 
