@@ -1,5 +1,5 @@
 /*
- * main.c
+ * Ben Browning and Will Cray
  */
 
 //This code is a skeleton for a Manchester Phase Encoded Transceiver
@@ -87,11 +87,15 @@ void InitTRXVariables(void){
 void InitTRXHardware(void) {
 
 //Set up ports here :
+	P2OUT &= ~CNTRL1;		// send T/R low for transmit
+	P2DIR |= CNTRL1;		// control T/R is an output
+	P2DIR &= ~RXDATA;		// RXDATA is an input
+	P1DIR |= TXDATA;		// TXDATA is an input
 
 // End of port setup/
-    BCSplus_initial()   ; //get clock going - 8 mhz rate
-    Timer0_A3_initial() ;
-    Timer1_A3_initial() ;
+    BCSplus_initial(); //get clock going - 8 mhz rate
+    Timer0_A3_initial();
+    Timer1_A3_initial();
 }
 
 
