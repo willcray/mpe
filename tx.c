@@ -73,6 +73,7 @@ void Xmit(void) {
 			_delay_cycles(INTERWORD_DELAY);
 			break;
 		}
+        _delay_cycles(INTERWORD_DELAY * 8000); // 50 ms / 8 MHz = 400,000;
 
 		break;
 	default:
