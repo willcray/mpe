@@ -66,10 +66,11 @@ void Xmit(void) {
 	case InterWord:
 		switch (Phase) {
 		case Low:
-
+			_delay_cycles(INTERWORD_DELAY);
 			break;
 		case High:
-
+			P1OUT &= ~TXMOD;	// send the data low during interword
+			_delay_cycles(INTERWORD_DELAY);
 			break;
 		}
         _delay_cycles(INTERWORD_DELAY * 8000); // 50 ms / 8 MHz = 400,000;

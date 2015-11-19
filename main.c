@@ -125,7 +125,6 @@ __interrupt void periodicTimerA0Interrupt(void) {
 #endif
 	/* No change in operating mode on exit */
 }
-
 /*
  *  ======== Timer1_A3 Interrupt Service Routine ========
  */
