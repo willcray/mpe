@@ -61,6 +61,8 @@ void Xmit(TransmitterData* TData) {
 			break;
 		}
 
+        if (TData->Bits_Remaining == 0) TData->Transmitter_State = InterWord;
+
 		break;
 	case InterWord:
 		switch (Phase) {
