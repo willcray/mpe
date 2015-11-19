@@ -8,9 +8,10 @@
 #define SET_TX_DIR      P1DIR |= BIT5;    
 #define TX_HIGH         P1OUT |= BIT5;
 #define TX_LOW          P1OUT &= ~BIT5;
-#define TXMOD BIT5	// using P1.5 for transmit data
-#define RXDATA BIT0 // using P2.0 for receive data
-#define CNTRL1 BIT6		// P1.6 for T/R control
+#define TXMOD BIT5			// using P1.5 for transmit data
+#define RXDATA BIT0 todo 	//todo check to see which interrupt is being called to determine
+							// if we want to use P2.0/P2.1 for receive data
+#define CNTRL1 BIT6			// P1.6 for T/R control
 
 // This is effectively how long to wait between transmissions
 #define INTERWORD_DELAY       50    //This is in units of mS
