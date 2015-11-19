@@ -14,7 +14,7 @@
 #define CNTRL1 BIT6			// P1.6 for T/R control
 
 // This is effectively how long to wait between transmissions
-#define INTERWORD_DELAY       50    //This is in units of mS
+#define INTERWORD_DELAY       400000    //This is in units of cycles running at 8MHz
 #define BITS_IN_TRANSMISSION  32 // Needed by both TX and RX
 
 // **************************************************************************************

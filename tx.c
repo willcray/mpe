@@ -66,10 +66,11 @@ void Xmit(void) {
 	case InterWord:
 		switch (Phase) {
 		case Low:
-
+			_delay_cycles(INTERWORD_DELAY);
 			break;
 		case High:
-
+			P1OUT &= ~TXMOD;	// send the data low during interword
+			_delay_cycles(INTERWORD_DELAY);
 			break;
 		}
 
@@ -94,7 +95,6 @@ void InitTXVariables(void) {
 //This is called every 500uS by the timer A0 interrupt function
 // Do whatever needs to be done on a periodic basis for tx here:
 void txinthandler(void) {
-	_delay_cycles(INTERWORD_DELAY);	// interword timeout delay
 	Xmit();	// transmit data every 500us
 }
 
