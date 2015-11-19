@@ -55,8 +55,8 @@ void Xmit(void) {
 				P1OUT |= TXMOD;	// this is MPEB
 			} else {
 				P1OUT &= ~TXMOD;
-                Xmit1.Bits_Remaining--;    //decrement the number of bits being transmitted every 1ms
 			}
+            Xmit1.Bits_Remaining--;    //decrement the number of bits being transmitted every 1ms
 			break;
 		}
 
