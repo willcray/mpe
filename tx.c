@@ -35,7 +35,6 @@ void Xmit(TransmitterData* TData) {
 			break;
 		case High:
             P1OUT &= ~TXMOD;
-			TData->Bits_Remaining--;	//decrement the number of bits being transmitted every 1ms
 			TData->Transmitter_State = NormalXmit;
             break;
 		}
