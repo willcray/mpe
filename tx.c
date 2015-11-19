@@ -22,14 +22,15 @@ void Xmit(void) {
 		Xmit1.Transmit_Clock_Phase = High;
         P2OUT |= BLUE_TEST_POINT;
 	} else
+    {
 		Xmit1.Transmit_Clock_Phase = Low;
         P2OUT &= ~BLUE_TEST_POINT;
-	Phase = Xmit1.Transmit_Clock_Phase;
+    }
 //Now do state machine
 	switch (Xmit1.Transmitter_State) {
 	case StartBit:
 
-		switch (Phase) {
+		switch (Xmit1.Transmit_Clock_Phase) {
 		case Low:
             P1OUT |= TXMOD;
 			break;
@@ -42,7 +43,7 @@ void Xmit(void) {
 		break;
 
 	case NormalXmit:
-		switch (Phase) {
+		switch (Xmit1.Transmit_Clock_Phase) {
 		case Low:
 			if (Xmit1.Transmit_Data >> Xmit1.Bits_Remaining) { // if current bit is high
 				P1OUT &= ~TXMOD;	// this is MPEB
@@ -64,14 +65,14 @@ void Xmit(void) {
 
 		break;
 	case InterWord:
-		switch (Phase) {
+		switch (Xmit1.Transmit_Clock_Phase) {
 		case Low:
 			break;
 		case High:
 			P1OUT &= ~TXMOD;	// send the data low during interword
 			break;
 		}
-        _delay_cycles(INTERWORD_DELAY); // 50 ms
+        // _delay_cycles(INTERWORD_DELAY); // 50 ms
         Xmit1.Transmit_Data = Xmit1.Transmit_Data_Buffer;
 
 		break;
