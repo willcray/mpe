@@ -76,11 +76,11 @@ void InitTRXHardware(void) {
 //Set up ports here :
 	P2OUT &= ~CNTRL1;		// send T/R low for transmit
 	P2DIR |= CNTRL1;		// control T/R is an output
-	P2OUT &= ~RXDATA;
-	// send RXDATA low
-	P2DIR &= ~RXDATA;
-	// RXDATA is an input
-	P1OUT &= ~TXMOD;		// send TXMOD low
+
+	P2OUT &= ~RXDATA; // set RXDATA low (is this necessary?)
+	P2DIR &= ~RXDATA; // RXDATA is an input
+
+	P1OUT &= ~TXMOD;		// set TXMOD low
 	P1DIR |= TXMOD;		// TXDATA is an output
 
     // set up test points
@@ -104,6 +104,8 @@ void main(void) {
 
 	//Enable Global Interrupts after all intializing is done.
 	_EINT();
+    // how is this different from _BIS_SR(GIE) as seen in other labs?
+
 	while (1) { //Main code loop here :
 #ifdef RX_ENABLED
 	rcv(); //Call the receiver

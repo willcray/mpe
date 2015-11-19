@@ -95,7 +95,6 @@ void InitTXVariables(void) {
 //This is called every 500uS by the timer A0 interrupt function
 // Do whatever needs to be done on a periodic basis for tx here:
 void txinthandler(void) {
-	_delay_cycles(INTERWORD_DELAY);	// interword timeout delay
 	Xmit();	// transmit data every 500us
 }
 
