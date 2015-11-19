@@ -7,6 +7,7 @@
 // ************************************************************************************
 #include <msp430.h>
 #include "tx.h"
+#include "radio_trx_header_board.h"
 
 // **************************************************************************************
 
@@ -17,8 +18,10 @@ void Xmit(TransmitterData* TData) {
 //Each 500 uS half bit period constitutes a separate clock "phase" for transmitter purposes.
 	if (TData->Transmit_Clock_Phase == Low) {
 		TData->Transmit_Clock_Phase = High;
+        P2OUT |= BLUE_TEST_POINT;
 	} else
 		TData->Transmit_Clock_Phase = Low;
+        P2OUT &= ~BLUE_TEST_POINT;
 	Phase = TData->Transmit_Clock_Phase;
 //Now do state machine
 	switch (TData->Transmitter_State) {

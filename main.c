@@ -26,20 +26,13 @@
 #include "tx.h"
 #endif
 
+ #include "radio_trx_header_board.h"
+
 // **************************************************************************************
 // Constant Defines Section
 // ************************************************************************************
 
 #define BITS_IN_TRANSMISSION  32 // Needed by both TX and RX
-
-// Test Points
-#define WHITE_TEST_POINT x // TX-DATA (TXMOD on TR1000) (U8)
-#define YELLOW_TEST_POINT x // RX-DATA (RXDATA on TR1000) (U9)
-#define BLUE_TEST_POINT x // P2.2 (U12)
-#define ORANGE_TEST_POINT x  // T/R (CNTRL1 on TR1000) (U10)
-#define GREEN_TEST_POINT x  // P2.5 (U11)
-#define PURPLE_TEST_POINT x // P2.4 (U13)
-#define BROWN_TEST_POINT x // P2.3 (U14)
 
 // **************************************************************************************
 // Function Prototypes Section
@@ -100,6 +93,11 @@ void InitTRXHardware(void) {
 	// RXDATA is an input
 	P1OUT &= ~TXMOD;		// send TXMOD low
 	P1DIR |= TXMOD;		// TXDATA is an output
+
+    // set up test points
+    // P2.2 (U12), P2.5 (U11), P2.4 (U13), P2.3 (U14)
+    P1OUT &= ~(BLUE_TEST_POINT + GREEN_TEST_POINT + PURPLE_TEST_POINT BIT4 + BROWN_TEST_POINT BIT3);
+    P1DIR |= (BLUE_TEST_POINT + GREEN_TEST_POINT + PURPLE_TEST_POINT BIT4 + BROWN_TEST_POINT BIT3);
 
 // End of port setup/
 	BCSplus_initial(); //get clock going - 8 mhz rate
