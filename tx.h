@@ -38,7 +38,7 @@ typedef struct {
 // Global Variables Section
 // ************************************************************************************
 
-TransmitterData Xmit1 ;  //This declares an instance of the transmitter data structure.
+extern TransmitterData Xmit1 ;  //This declares an instance of the transmitter data structure.
 
 // **************************************************************************************
 // Function Prototypes Section

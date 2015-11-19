@@ -11,6 +11,8 @@
 
 // **************************************************************************************
 
+TransmitterData Xmit1 ;  //This declares an instance of the transmitter data structure.
+
 //This routine manages the actual transmitter and is called every 500uS by a periodic interrupt.
 //Comment Well
 void Xmit(TransmitterData* TData) {
@@ -29,11 +31,13 @@ void Xmit(TransmitterData* TData) {
 
 		switch (Phase) {
 		case Low:
-
+            P1OUT |= TXMOD;
 			break;
 		case High:
-			Xmit1.Bits_Remaining--;	//decrement the number of bits being transmitted every 1ms
-			break;
+            P1OUT &= ~TXMOD;
+			TData->Bits_Remaining--;	//decrement the number of bits being transmitted every 1ms
+			TData->Transmitter_State = NormalXmit;
+            break;
 		}
 
 		break;
@@ -52,6 +56,7 @@ void Xmit(TransmitterData* TData) {
 				P1OUT |= TXMOD;	// this is MPEB
 			} else {
 				P1OUT &= ~TXMOD;
+                TData->Bits_Remaining--;    //decrement the number of bits being transmitted every 1ms
 			}
 
 			break;

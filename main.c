@@ -96,8 +96,8 @@ void InitTRXHardware(void) {
 
     // set up test points
     // P2.2 (U12), P2.5 (U11), P2.4 (U13), P2.3 (U14)
-    P1OUT &= ~(BLUE_TEST_POINT + GREEN_TEST_POINT + PURPLE_TEST_POINT + BROWN_TEST_POINT);
-    P1DIR |= (BLUE_TEST_POINT + GREEN_TEST_POINT + PURPLE_TEST_POINT + BROWN_TEST_POINT);
+    P2OUT &= ~(BLUE_TEST_POINT + GREEN_TEST_POINT + PURPLE_TEST_POINT + BROWN_TEST_POINT);
+    P2DIR |= (BLUE_TEST_POINT + GREEN_TEST_POINT + PURPLE_TEST_POINT + BROWN_TEST_POINT);
 
 // End of port setup/
 	BCSplus_initial(); //get clock going - 8 mhz rate
