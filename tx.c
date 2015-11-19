@@ -57,7 +57,6 @@ void Xmit(TransmitterData* TData) {
 				P1OUT &= ~TXMOD;
                 TData->Bits_Remaining--;    //decrement the number of bits being transmitted every 1ms
 			}
-
 			break;
 		}
 
@@ -74,8 +73,7 @@ void Xmit(TransmitterData* TData) {
 
 		break;
 	default:
-		TData->Transmitter_State = StartBit;
-//Other intitialization here.....
+		InitRXVariables();		// reinitialize TransmissionData variables
 		break;
 
 	}
