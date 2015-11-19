@@ -32,14 +32,13 @@
 // Constant Defines Section
 // ************************************************************************************
 
-#define BITS_IN_TRANSMISSION  32 // Needed by both TX and RX
+
 
 // **************************************************************************************
 // Function Prototypes Section
 // ************************************************************************************
 
 void InitTRXHardware(void); //This initializes all hardware subsystems, timer, ports etc.
-void InitTRXVariables(void); //All Global Variables are set up by this
 //Defines for initializiation of various subsystems
 //Clock System Initialization
 void BCSplus_initial(void);
@@ -52,16 +51,7 @@ void Timer1_A3_initial(void);
 
 //Set up globals, including the transmitter structure.
 //Comment Well
-void InitTRXVariables(void) {
-#ifdef TX_ENABLED
-	//Here is an example:
-	Xmit1.Bits_Remaining = BITS_IN_TRANSMISSION;
-	Xmit1.Transmit_Data_Buffer = 0xAA55AA55;  //
-	Xmit1.Transmit_Data = 0xAA55AA55; //This is just sample data, the final application Determines what is to be sent.
-	Xmit1.Transmit_Clock_Phase = Low;
-	Xmit1.Transmitter_State = StartBit;
-	Xmit1.InterwordTimeout = INTERWORD_DELAY;
-#endif
+
 #ifdef RX_ENABLED
 	//etc. .....
 	Receiver_Events.Get_Index = 0;
@@ -79,7 +69,6 @@ void InitTRXVariables(void) {
 	Rcv1.LastValidReceived = 0;
 #endif
 
-}
 
 //Comment Well!
 void InitTRXHardware(void) {
@@ -111,7 +100,7 @@ void main(void) {
 	WDTCTL = WDTHOLD + WDTPW;
 
 	InitTRXHardware();
-	InitTRXVariables();
+	InitTXVariables();
 
 	//Enable Global Interrupts after all intializing is done.
 	_EINT();

@@ -15,6 +15,7 @@
 
 // This is effectively how long to wait between transmissions
 #define INTERWORD_DELAY       50    //This is in units of mS
+#define BITS_IN_TRANSMISSION  32 // Needed by both TX and RX
 
 // **************************************************************************************
 // Type Declarations Section
@@ -43,7 +44,8 @@ extern TransmitterData Xmit1 ;  //This declares an instance of the transmitter d
 // **************************************************************************************
 // Function Prototypes Section
 // ************************************************************************************
-void Xmit(TransmitterData * TData) ; //This routine is called every 500 uS by an interrupt handler.
+void Xmit(void) ; //This routine is called every 500 uS by an interrupt handler.
+void InitTXVariables(void); //All Global Variables are set up by this
 void txinthandler(void);
 
 // ************************************************************************************************

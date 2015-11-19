@@ -15,18 +15,18 @@ TransmitterData Xmit1 ;  //This declares an instance of the transmitter data str
 
 //This routine manages the actual transmitter and is called every 500uS by a periodic interrupt.
 //Comment Well
-void Xmit(TransmitterData* TData) {
+void Xmit(void) {
 	enum XmitClockPhase Phase;
 //Each 500 uS half bit period constitutes a separate clock "phase" for transmitter purposes.
-	if (TData->Transmit_Clock_Phase == Low) {
-		TData->Transmit_Clock_Phase = High;
+	if (Xmit1.Transmit_Clock_Phase == Low) {
+		Xmit1.Transmit_Clock_Phase = High;
         P2OUT |= BLUE_TEST_POINT;
 	} else
-		TData->Transmit_Clock_Phase = Low;
+		Xmit1.Transmit_Clock_Phase = Low;
         P2OUT &= ~BLUE_TEST_POINT;
-	Phase = TData->Transmit_Clock_Phase;
+	Phase = Xmit1.Transmit_Clock_Phase;
 //Now do state machine
-	switch (TData->Transmitter_State) {
+	switch (Xmit1.Transmitter_State) {
 	case StartBit:
 
 		switch (Phase) {
@@ -35,7 +35,7 @@ void Xmit(TransmitterData* TData) {
 			break;
 		case High:
             P1OUT &= ~TXMOD;
-			TData->Transmitter_State = NormalXmit;
+			Xmit1.Transmitter_State = NormalXmit;
             break;
 		}
 
@@ -44,23 +44,23 @@ void Xmit(TransmitterData* TData) {
 	case NormalXmit:
 		switch (Phase) {
 		case Low:
-			if (TData->Transmit_Data >> TData->Bits_Remaining) { // if current bit is high
+			if (Xmit1.Transmit_Data >> Xmit1.Bits_Remaining) { // if current bit is high
 				P1OUT &= ~TXMOD;	// this is MPEB
 			} else {
 				P1OUT |= TXMOD;
 			}
 			break;
 		case High:
-			if (TData->Transmit_Data >> TData->Bits_Remaining) { // if current bit is high
+			if (Xmit1.Transmit_Data >> Xmit1.Bits_Remaining) { // if current bit is high
 				P1OUT |= TXMOD;	// this is MPEB
 			} else {
 				P1OUT &= ~TXMOD;
-                TData->Bits_Remaining--;    //decrement the number of bits being transmitted every 1ms
+                Xmit1.Bits_Remaining--;    //decrement the number of bits being transmitted every 1ms
 			}
 			break;
 		}
 
-        if (TData->Bits_Remaining == 0) TData->Transmitter_State = InterWord;
+        if (Xmit1.Bits_Remaining == 0) Xmit1.Transmitter_State = InterWord;
 
 		break;
 	case InterWord:
@@ -75,10 +75,19 @@ void Xmit(TransmitterData* TData) {
 
 		break;
 	default:
-		InitRXVariables();		// reinitialize TransmissionData variables
+		InitTXVariables();		// reinitialize TransmissionData variables
 		break;
 
 	}
+}
+void InitTXVariables(void) {
+	//Here is an example:
+	Xmit1.Bits_Remaining = BITS_IN_TRANSMISSION;
+	Xmit1.Transmit_Data_Buffer = 0xAA55AA55;  //
+	Xmit1.Transmit_Data = 0xAA55AA55; //This is just sample data, the final application Determines what is to be sent.
+	Xmit1.Transmit_Clock_Phase = Low;
+	Xmit1.Transmitter_State = StartBit;
+	Xmit1.InterwordTimeout = INTERWORD_DELAY;
 }
 
 //Functions called via an  interrupt
@@ -86,6 +95,6 @@ void Xmit(TransmitterData* TData) {
 // Do whatever needs to be done on a periodic basis for tx here:
 void txinthandler(void) {
 	_delay_cycles(INTERWORD_DELAY);	// interword timeout delay
-	Xmit(&Xmit1);	// transmit data every 500us
+	Xmit();	// transmit data every 500us
 }
 
