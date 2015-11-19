@@ -9,7 +9,7 @@
 #define TX_HIGH         P1OUT |= BIT5;
 #define TX_LOW          P1OUT &= ~BIT5;
 #define TXMOD BIT5			// using P1.5 for transmit data
-#define RXDATA BIT0 todo 	//todo check to see which interrupt is being called to determine
+#define RXDATA BIT0 	 	//todo check to see which interrupt is being called to determine
 							// if we want to use P2.0/P2.1 for receive data
 #define CNTRL1 BIT6			// P1.6 for T/R control
 

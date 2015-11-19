@@ -96,8 +96,8 @@ void InitTRXHardware(void) {
 
     // set up test points
     // P2.2 (U12), P2.5 (U11), P2.4 (U13), P2.3 (U14)
-    P1OUT &= ~(BLUE_TEST_POINT + GREEN_TEST_POINT + PURPLE_TEST_POINT BIT4 + BROWN_TEST_POINT BIT3);
-    P1DIR |= (BLUE_TEST_POINT + GREEN_TEST_POINT + PURPLE_TEST_POINT BIT4 + BROWN_TEST_POINT BIT3);
+    P1OUT &= ~(BLUE_TEST_POINT + GREEN_TEST_POINT + PURPLE_TEST_POINT + BROWN_TEST_POINT);
+    P1DIR |= (BLUE_TEST_POINT + GREEN_TEST_POINT + PURPLE_TEST_POINT + BROWN_TEST_POINT);
 
 // End of port setup/
 	BCSplus_initial(); //get clock going - 8 mhz rate
@@ -156,7 +156,7 @@ __interrupt void timerCaptureFallingInterrupt(void) {
 	{
 	case TA1IV_TACCR1:
 		/* Capture Compare Register 1 ISR Hook Function Name */
-		fallingedge();
+		// fallingedge();
 		/* No change in operating mode on exit */
 		break;
 	case TA1IV_TACCR2:
