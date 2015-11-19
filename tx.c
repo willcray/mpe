@@ -16,7 +16,6 @@ TransmitterData Xmit1 ;  //This declares an instance of the transmitter data str
 //This routine manages the actual transmitter and is called every 500uS by a periodic interrupt.
 //Comment Well
 void Xmit(void) {
-	enum XmitClockPhase Phase;
 //Each 500 uS half bit period constitutes a separate clock "phase" for transmitter purposes.
 	if (Xmit1.Transmit_Clock_Phase == Low) {
 		Xmit1.Transmit_Clock_Phase = High;
@@ -45,14 +44,14 @@ void Xmit(void) {
 	case NormalXmit:
 		switch (Xmit1.Transmit_Clock_Phase) {
 		case Low:
-			if (Xmit1.Transmit_Data >> Xmit1.Bits_Remaining) { // if current bit is high
+			if ((Xmit1.Transmit_Data >> Xmit1.Bits_Remaining) & 0x1) { // if current bit is high
 				P1OUT &= ~TXMOD;	// this is MPEB
 			} else {
 				P1OUT |= TXMOD;
 			}
 			break;
 		case High:
-			if (Xmit1.Transmit_Data >> Xmit1.Bits_Remaining) { // if current bit is high
+			if ((Xmit1.Transmit_Data >> Xmit1.Bits_Remaining) & 0x1) { // if current bit is high
 				P1OUT |= TXMOD;	// this is MPEB
 			} else {
 				P1OUT &= ~TXMOD;
@@ -70,6 +69,7 @@ void Xmit(void) {
 			break;
 		case High:
 			P1OUT &= ~TXMOD;	// send the data low during interword
+            InitTXVariables();      // reinitialize TransmissionData variables
 			break;
 		}
         // _delay_cycles(INTERWORD_DELAY); // 50 ms
@@ -77,7 +77,6 @@ void Xmit(void) {
 
 		break;
 	default:
-		InitTXVariables();		// reinitialize TransmissionData variables
 		break;
 
 	}
