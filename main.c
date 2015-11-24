@@ -146,7 +146,9 @@ __interrupt void timerCaptureFallingInterrupt(void) {
 	{
 	case TA1IV_TACCR1:
 		/* Capture Compare Register 1 ISR Hook Function Name */
-		// fallingedge();
+		#ifdef RX_ENABLED
+		fallingedge();
+		#endif
 		/* No change in operating mode on exit */
 		break;
 	case TA1IV_TACCR2:
