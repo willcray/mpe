@@ -77,7 +77,7 @@ void Xmit(void) {
 
 		break;
 	default:
-        TData->Transmitter_State = StartBit;
+        Xmit1.Transmitter_State = StartBit;
         // other initialization here
 		break;
 
