@@ -9,7 +9,7 @@
 
 void rxinthandler(void)
 {
-    /// If you want something to happen for the receiver every 500us, you can do it here.
+    // If you want something to happen for the receiver every 500us, you can do it here.
 
 }
 
@@ -20,7 +20,7 @@ void rcv(void){
     PulseWidthStatus PWidth ;
     unsigned int CurrentTime ;
     Event_Que_Entry Current_Event ;
-    CurrentTime = TA1R ; //Get the approximate current timestamp.
+    CurrentTime = TA1R ; // Get the approximate current timestamp.
     if ((CurrentTime - Rcv1.LastEdgeTimeStamp) > MISSING_EDGE_TIMEOUT ){//Here we have had no transmissions in a while
         Rcv1.CurrentRcvState = Initial_Expect_Rising ;
     }

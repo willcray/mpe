@@ -15,8 +15,8 @@
 // ************************************************************************************
 #include <msp430.h>
 
-#define TX_ENABLED      // Enable Transmit feature at compile time
-//#define RX_ENABLED    // Enable Receive feature at compile time
+// #define TX_ENABLED      // Enable Transmit feature at compile time
+#define RX_ENABLED    // Enable Receive feature at compile time
 
 #ifdef RX_ENABLED
 #include "rx.h"
