@@ -77,6 +77,8 @@ void Xmit(void) {
 
 		break;
 	default:
+        TData->Transmitter_State = StartBit;
+        // other initialization here
 		break;
 
 	}
