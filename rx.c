@@ -6,6 +6,9 @@
 */
 #include "rx.h"
 
+ManchesterReceiver Rcv1 ;
+Event_Queue Receiver_Events ;
+
 void rxinthandler(void)
 {
     // If you want something to happen for the receiver every 500us, you can do it here.

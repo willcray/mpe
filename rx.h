@@ -64,8 +64,8 @@ typedef enum PulseWidths {Invalid_Width,Valid_HalfBit,Valid_FullBit} PulseWidthS
 // ************************************************************************************
 
 //Receiver Global Variables
-ManchesterReceiver Rcv1 ;
-Event_Queue Receiver_Events ;
+extern ManchesterReceiver Rcv1 ;
+extern Event_Queue Receiver_Events ;
 
 // ************************************************************************************************
 
