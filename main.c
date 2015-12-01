@@ -15,6 +15,7 @@
 // ************************************************************************************
 #include <msp430.h>
 #include "tx.h"
+#include "radio_trx_header_board.h"
 
 // #define TX_ENABLED      // Enable Transmit feature at compile time
 #define RX_ENABLED    // Enable Receive feature at compile time
@@ -27,13 +28,10 @@
 #include "tx.h"
 #endif
 
-#include "radio_trx_header_board.h"
 
 // **************************************************************************************
 // Constant Defines Section
 // ************************************************************************************
-
-const int BITS_IN_TRANSMISSION = 32;
 
 // **************************************************************************************
 // Function Prototypes Section

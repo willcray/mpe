@@ -10,4 +10,6 @@
 #define PURPLE_TEST_POINT BIT4 // P2.4 (U13)
 #define BROWN_TEST_POINT BIT3 // P2.3 (U14)
 
+#define BITS_IN_TRANSMISSION  32 // Needed by both TX and RX
+
 #endif

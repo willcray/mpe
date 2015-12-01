@@ -1,3 +1,9 @@
+#ifndef TX_H
+#define TX_H
+
+#include <msp430.h>
+#include "radio_trx_header_board.h"
+
 /*
  * Ben Browning and Will Cray
  */
@@ -15,7 +21,6 @@
 
 // This is effectively how long to wait between transmissions
 #define INTERWORD_DELAY       400000    //This is in units of cycles running at 8MHz
-#define BITS_IN_TRANSMISSION  32 // Needed by both TX and RX
 
 // **************************************************************************************
 // Type Declarations Section
@@ -41,7 +46,6 @@ typedef struct {
 
 extern TransmitterData Xmit1 ;  //This declares an instance of the transmitter data structure.
 
-extern int BITS_IN_TRANSMISSION;
 // **************************************************************************************
 // Function Prototypes Section
 // ************************************************************************************
@@ -51,3 +55,4 @@ void txinthandler(void);
 
 // ************************************************************************************************
 
+#endif

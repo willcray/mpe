@@ -1,3 +1,9 @@
+#ifndef RX_H
+#define RX_H
+
+#include <msp430.h>
+#include "radio_trx_header_board.h"
+
 /*
  * Ben Browning and Will Cray
  */
@@ -17,8 +23,6 @@
 #define MISSING_EDGE_TIMEOUT 1200
 
 #define SIZE_OF_RCV_QUE        4 //Must be a power of 2!
-
-extern const int BITS_IN_TRANSMISSION;
 
 //Receiver Definitions and declarations
 enum Captured_Edge {Rising,Falling} ;  //these are the 2 types of edges in the received signal
@@ -92,3 +96,5 @@ void rxinthandler(void);
 
 
 // ************************************************************************************************
+
+#endif

@@ -4,7 +4,6 @@
 /*
  * rx.c
 */
-#include <msp430.h>
 #include "rx.h"
 
 void rxinthandler(void)
