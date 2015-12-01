@@ -41,6 +41,7 @@ typedef struct {
 
 extern TransmitterData Xmit1 ;  //This declares an instance of the transmitter data structure.
 
+extern int BITS_IN_TRANSMISSION;
 // **************************************************************************************
 // Function Prototypes Section
 // ************************************************************************************

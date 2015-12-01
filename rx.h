@@ -18,7 +18,7 @@
 
 #define SIZE_OF_RCV_QUE        4 //Must be a power of 2!
 
-extern int BITS_IN_TRANSMISSION;
+extern const int BITS_IN_TRANSMISSION;
 
 //Receiver Definitions and declarations
 enum Captured_Edge {Rising,Falling} ;  //these are the 2 types of edges in the received signal

@@ -14,6 +14,7 @@
 // Includes Section
 // ************************************************************************************
 #include <msp430.h>
+#include "tx.h"
 
 // #define TX_ENABLED      // Enable Transmit feature at compile time
 #define RX_ENABLED    // Enable Receive feature at compile time
@@ -26,13 +27,13 @@
 #include "tx.h"
 #endif
 
- #include "radio_trx_header_board.h"
+#include "radio_trx_header_board.h"
 
 // **************************************************************************************
 // Constant Defines Section
 // ************************************************************************************
 
-
+const int BITS_IN_TRANSMISSION = 32;
 
 // **************************************************************************************
 // Function Prototypes Section
@@ -52,23 +53,24 @@ void Timer1_A3_initial(void);
 //Set up globals, including the transmitter structure.
 //Comment Well
 
+void InitTRXVariables(void) {
 #ifdef RX_ENABLED
-	//etc. .....
-	Receiver_Events.Get_Index = 0;
-	Receiver_Events.Put_index = 0;
-	Receiver_Events.QueSize = 0;
+//etc. .....
+Receiver_Events.Get_Index = 0;
+Receiver_Events.Put_index = 0;
+Receiver_Events.QueSize = 0;
 
-	//etc.........
-	Rcv1.CurrentRcvState = Initial_Expect_Rising;
-	Rcv1.CurrentRecvdData = 0;
-	Rcv1.FallingEdgeTimeStamp = 0;
-	Rcv1.RisingEdgeTimeStamp = 0;
-	Rcv1.MidBitTimeStamp = 0;
-	Rcv1.PulseWidth = 0;
-	Rcv1.CurrentRecvdData = 0;
-	Rcv1.LastValidReceived = 0;
+//etc.........
+Rcv1.CurrentRcvState = Initial_Expect_Rising;
+Rcv1.CurrentRecvdData = 0;
+Rcv1.FallingEdgeTimeStamp = 0;
+Rcv1.RisingEdgeTimeStamp = 0;
+Rcv1.MidBitTimeStamp = 0;
+Rcv1.PulseWidth = 0;
+Rcv1.CurrentRecvdData = 0;
+Rcv1.LastValidReceived = 0;
 #endif
-
+}
 
 //Comment Well!
 void InitTRXHardware(void) {
@@ -83,10 +85,12 @@ void InitTRXHardware(void) {
 	P1OUT &= ~TXMOD;		// set TXMOD low
 	P1DIR |= TXMOD;		// TXDATA is an output
 
-    // set up test points
-    // P2.2 (U12), P2.5 (U11), P2.4 (U13), P2.3 (U14)
-    P2OUT &= ~(BLUE_TEST_POINT + GREEN_TEST_POINT + PURPLE_TEST_POINT + BROWN_TEST_POINT);
-    P2DIR |= (BLUE_TEST_POINT + GREEN_TEST_POINT + PURPLE_TEST_POINT + BROWN_TEST_POINT);
+	// set up test points
+	// P2.2 (U12), P2.5 (U11), P2.4 (U13), P2.3 (U14)
+	P2OUT &= ~(BLUE_TEST_POINT + GREEN_TEST_POINT + PURPLE_TEST_POINT
+			+ BROWN_TEST_POINT);
+	P2DIR |= (BLUE_TEST_POINT + GREEN_TEST_POINT + PURPLE_TEST_POINT
+			+ BROWN_TEST_POINT);
 
 // End of port setup/
 	BCSplus_initial(); //get clock going - 8 mhz rate
@@ -104,11 +108,11 @@ void main(void) {
 
 	//Enable Global Interrupts after all intializing is done.
 	_EINT();
-    // how is this different from _BIS_SR(GIE) as seen in other labs?
+	// how is this different from _BIS_SR(GIE) as seen in other labs?
 
 	while (1) { //Main code loop here :
 #ifdef RX_ENABLED
-	rcv(); //Call the receiver
+		rcv(); //Call the receiver
 #endif
 	}
 }
@@ -146,9 +150,9 @@ __interrupt void timerCaptureFallingInterrupt(void) {
 	{
 	case TA1IV_TACCR1:
 		/* Capture Compare Register 1 ISR Hook Function Name */
-		#ifdef RX_ENABLED
+#ifdef RX_ENABLED
 		fallingedge();
-		#endif
+#endif
 		/* No change in operating mode on exit */
 		break;
 	case TA1IV_TACCR2:
