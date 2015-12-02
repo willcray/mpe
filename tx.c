@@ -48,6 +48,7 @@ void Xmit(void) {
 		case NormalXmit:
 			switch (Xmit1.Transmit_Clock_Phase) {
 			case Low:
+				// mid bit transition stuff if necessary
 				if ((Xmit1.Transmit_Data >> Xmit1.Bits_Remaining) & 0x1) { // if current bit is high
 					// clock just fell, and we're trying to send a 1, therefore set TXMOD low so it can go high on clock rise
 					P1OUT &= ~TXMOD;	// this is MPEB
@@ -58,6 +59,7 @@ void Xmit(void) {
 			break;
 			
 			case High:
+				Xmit1.Bits_Remaining--;    //decrement the number of bits being transmitted every 1ms
 				if ((Xmit1.Transmit_Data >> Xmit1.Bits_Remaining) & 0x1) { // if current bit is high
 					// clock just rose, and we're trying to send a 1, therefore set TXMOD high
 					P1OUT |= TXMOD;	// this is MPEB
@@ -65,11 +67,12 @@ void Xmit(void) {
 					// clock just rose, and we're trying to send a 0, therefore set TXMOD low
 					P1OUT &= ~TXMOD;
 				}
-				Xmit1.Bits_Remaining--;    //decrement the number of bits being transmitted every 1ms
 			break;
 			}
 
-	        if (Xmit1.Bits_Remaining == 0) Xmit1.Transmitter_State = InterWord;
+	        if (Xmit1.Bits_Remaining == 0){
+	        	Xmit1.Transmitter_State = InterWord;
+	        }
 
 		break;
 
@@ -93,8 +96,8 @@ void Xmit(void) {
 void InitTXVariables(void) {
 	//Here is an example:
 	Xmit1.Bits_Remaining = BITS_IN_TRANSMISSION;
-	Xmit1.Transmit_Data_Buffer = 0xFFFF5555;  //
-	Xmit1.Transmit_Data = 0xFFFF5555; //This is just sample data, the final application Determines what is to be sent.
+	Xmit1.Transmit_Data_Buffer = 0xDEADBEEF;  //
+	Xmit1.Transmit_Data = 0xDEADBEEF; //This is just sample data, the final application Determines what is to be sent.
 	Xmit1.Transmit_Clock_Phase = Low;
 	Xmit1.Transmitter_State = StartBit;
 	Xmit1.InterwordTimeout = INTERWORD_DELAY;
