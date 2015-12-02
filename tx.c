@@ -27,34 +27,34 @@ void Xmit(void) {
 	switch (Xmit1.Transmitter_State) {
 	case StartBit:
 		P2OUT ^= GREEN_TEST_POINT;
-		switch (Xmit1.Transmit_Clock_Phase) {
-		case Low:
-            P1OUT |= TXMOD;
-			break;
-		case High:
-            P1OUT &= ~TXMOD;
-			Xmit1.Transmitter_State = NormalXmit;
-            break;
-		}
-
+		_DINT();
+		P1OUT |= TXMOD;
+		_delay_cycles(8000);
+        P1OUT &= ~TXMOD;
+		_EINT();
+		Xmit1.Transmitter_State = NormalXmit;
 		break;
 
 	case NormalXmit:
 		switch (Xmit1.Transmit_Clock_Phase) {
 		case Low:
 			if ((Xmit1.Transmit_Data >> Xmit1.Bits_Remaining) & 0x1) { // if current bit is high
+				// clock just fell, and we're trying to send a 1, therefore set TXMOD low so it can go high on clock rise
 				P1OUT &= ~TXMOD;	// this is MPEB
 			} else {
+				// clock just fell, and we're trying to send a 0, therefore set TXMOD high so it can go low on clock rise
 				P1OUT |= TXMOD;
 			}
 			break;
 		case High:
 			if ((Xmit1.Transmit_Data >> Xmit1.Bits_Remaining) & 0x1) { // if current bit is high
+				// clock just rose, and we're trying to send a 1, therefore set TXMOD high
 				P1OUT |= TXMOD;	// this is MPEB
 			} else {
+				// clock just rose, and we're trying to send a 0, therefore set TXMOD low
 				P1OUT &= ~TXMOD;
 			}
-            Xmit1.Bits_Remaining--;    //decrement the number of bits being transmitted every 1ms
+			Xmit1.Bits_Remaining--;    //decrement the number of bits being transmitted every 1ms
 			break;
 		}
 
@@ -62,16 +62,17 @@ void Xmit(void) {
 
 		break;
 	case InterWord:
+		P1OUT &= ~TXMOD;	// send the data low during interword
 		switch (Xmit1.Transmit_Clock_Phase) {
 		case Low:
 			break;
 		case High:
-			P1OUT &= ~TXMOD;	// send the data low during interword
-            InitTXVariables();      // reinitialize TransmissionData variables
+			Xmit1.InterwordTimeout--;
 			break;
 		}
-        // _delay_cycles(INTERWORD_DELAY); // 50 ms
-        Xmit1.Transmit_Data = Xmit1.Transmit_Data_Buffer;
+		if (Xmit1.InterwordTimeout == 0){
+			InitTXVariables();      // reinitialize TransmissionData variables
+		}
 
 		break;
 	default:
