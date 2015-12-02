@@ -26,7 +26,7 @@ void Xmit(void) {
 //Now do state machine
 	switch (Xmit1.Transmitter_State) {
 	case StartBit:
-
+		P2OUT ^= GREEN_TEST_POINT;
 		switch (Xmit1.Transmit_Clock_Phase) {
 		case Low:
             P1OUT |= TXMOD;
