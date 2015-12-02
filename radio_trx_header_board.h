@@ -1,6 +1,11 @@
 #ifndef RADIO_TRX_HEADER_BOARD_H
 #define RADIO_TRX_HEADER_BOARD_H
 
+#define TXMOD BIT5			// using P1.5 for transmit data
+#define RXDATA BIT0 	 	//todo check to see which interrupt is being called to determine
+							// if we want to use P2.0/P2.1 for receive data
+#define CNTRL1 BIT6			// P1.6 for T/R control
+
 // Test Points
 #define WHITE_TEST_POINT BIT5 // P1.5 TX-DATA (TXMOD on TR1000) (U8)
 #define YELLOW_TEST_POINT BIT0 // P2.0 / 2.1 RX-DATA (RXDATA on TR1000) (U9)
