@@ -51,25 +51,6 @@ void Timer1_A3_initial(void);
 //Set up globals, including the transmitter structure.
 //Comment Well
 
-void InitTRXVariables(void) {
-#ifdef RX_ENABLED
-//etc. .....
-Receiver_Events.Get_Index = 0;
-Receiver_Events.Put_index = 0;
-Receiver_Events.QueSize = 0;
-
-//etc.........
-Rcv1.CurrentRcvState = Initial_Expect_Rising;
-Rcv1.CurrentRecvdData = 0;
-Rcv1.FallingEdgeTimeStamp = 0;
-Rcv1.RisingEdgeTimeStamp = 0;
-Rcv1.MidBitTimeStamp = 0;
-Rcv1.PulseWidth = 0;
-Rcv1.CurrentRecvdData = 0;
-Rcv1.LastValidReceived = 0;
-#endif
-}
-
 //Comment Well!
 void InitTRXHardware(void) {
 
@@ -102,7 +83,12 @@ void main(void) {
 	WDTCTL = WDTHOLD + WDTPW;
 
 	InitTRXHardware();
-	InitTXVariables();
+    #ifdef TX_ENABLED
+	   InitTXVariables();
+    #endif
+    #ifdef RX_ENABLED
+        InitRXVariables();
+    #endif
 
 	//Enable Global Interrupts after all intializing is done.
 	_EINT();

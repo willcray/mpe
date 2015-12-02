@@ -94,6 +94,8 @@ void fallingedge(void);
 
 void rxinthandler(void);
 
+void InitRXVariables(void);
+
 
 // ************************************************************************************************
 
