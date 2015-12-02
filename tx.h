@@ -16,7 +16,8 @@
 #define TX_LOW          P1OUT &= ~BIT5;
 
 // This is effectively how long to wait between transmissions
-#define INTERWORD_DELAY       400000    //This is in units of cycles running at 8MHz
+// #define INTERWORD_DELAY       400000    //This is in units of cycles running at 8MHz
+#define INTERWORD_DELAY 100 // 100 interrupts, each 500us each
 
 // **************************************************************************************
 // Type Declarations Section
