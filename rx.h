@@ -16,10 +16,10 @@
 //The underlying assumptions are"
 //The capture timers are updated with a 1uS resolution
 //A full bit time is 1 mS nominal
-#define VALID_HALF_BIT_MIN    450
-#define VALID_HALF_BIT_MAX    550
-#define VALID_FULL_BIT_MIN    950
-#define VALID_FULL_BIT_MAX   1050
+#define VALID_HALF_BIT_MIN    300
+#define VALID_HALF_BIT_MAX    700
+#define VALID_FULL_BIT_MIN    800
+#define VALID_FULL_BIT_MAX   1200
 #define MISSING_EDGE_TIMEOUT 1200
 
 #define SIZE_OF_RCV_QUE        4 //Must be a power of 2!

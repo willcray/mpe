@@ -106,11 +106,6 @@ void main(void) {
 	while (1) { //Main code loop here :
 #ifdef RX_ENABLED
 	rcv(); //Call the receiver
-	P1DIR |= BIT3;
-	if(Rcv1.LastValidReceived == Xmit1.Transmit_Data){
-		P1OUT |= BIT3;
-	}else{
-		P1OUT &= ~BIT3;
 	}
 #endif
 	}
