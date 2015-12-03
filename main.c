@@ -65,7 +65,7 @@ void InitTRXHardware(void) {
 	P2DIR &= ~RXDATA_20;// RXDATA is an input
 	P2DIR &= ~RXDATA_21;// RXDATA is an input
 
-	P1OUT &= ~CNTRL1;// send T/R low for transmit
+	P1OUT |= CNTRL1;// send T/R high for receive
 	P1DIR |= CNTRL1;// control T/R is an output
 
 	// set up timer a3 to get interrupted by P2.0 and P2.1
