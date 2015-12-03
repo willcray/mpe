@@ -111,17 +111,6 @@ void InitTXVariables(long data) {
 	Xmit1.InterwordTimeout = INTERWORD_DELAY;
 }
 
-int countOnes(long data) {
-	int count = 0;
-	while (data)
-	{
-		if (data & 0x1)
-			count++;
-		data >>= 1;
-	}
-	return count;
-}
-
 //Functions called via an  interrupt
 //This is called every 500uS by the timer A0 interrupt function
 // Do whatever needs to be done on a periodic basis for tx here:
