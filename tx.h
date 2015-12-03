@@ -47,8 +47,9 @@ extern TransmitterData Xmit1 ;  //This declares an instance of the transmitter d
 // Function Prototypes Section
 // ************************************************************************************
 void Xmit(void) ; //This routine is called every 500 uS by an interrupt handler.
-void InitTXVariables(void); //All Global Variables are set up by this
+void InitTXVariables(long data); //All Global Variables are set up by this
 void txinthandler(void);
+int countOnes(long data);
 
 // ************************************************************************************************
 
