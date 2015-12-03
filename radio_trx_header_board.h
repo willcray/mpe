@@ -18,4 +18,6 @@
 
 #define BITS_IN_TRANSMISSION  32 // Needed by both TX and RX
 
+int countOnes(long data);
+
 #endif
