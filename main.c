@@ -17,8 +17,8 @@
 #include "tx.h"
 #include "radio_trx_header_board.h"
 
-#define TX_ENABLED      // Enable Transmit feature at compile time
-//#define RX_ENABLED    // Enable Receive feature at compile time
+//define TX_ENABLED      // Enable Transmit feature at compile time
+#define RX_ENABLED    // Enable Receive feature at compile time
 
 #ifdef RX_ENABLED
 #include "rx.h"
@@ -106,6 +106,12 @@ void main(void) {
 	while (1) { //Main code loop here :
 #ifdef RX_ENABLED
 	rcv(); //Call the receiver
+	P1DIR |= BIT3;
+	if(Rcv1.LastValidReceived == Xmit1.Transmit_Data){
+		P1OUT |= BIT3;
+	}else{
+		P1OUT &= ~BIT3;
+	}
 #endif
 	}
 }
