@@ -18,7 +18,7 @@
 #include "radio_trx_header_board.h"
 
 #define TX_ENABLED      // Enable Transmit feature at compile time
-// #define RX_ENABLED    // Enable Receive feature at compile time
+//#define RX_ENABLED    // Enable Receive feature at compile time
 
 #ifdef RX_ENABLED
 #include "rx.h"
@@ -27,7 +27,6 @@
 #ifdef TX_ENABLED
 #include "tx.h"
 #endif
-
 
 // **************************************************************************************
 // Constant Defines Section
@@ -55,18 +54,24 @@ void Timer1_A3_initial(void);
 void InitTRXHardware(void) {
 
 //Set up ports here :
-	P2OUT &= ~CNTRL1;		// send T/R low for transmit
-	P2DIR |= CNTRL1;		// control T/R is an output
-
-	P2OUT &= ~RXDATA; // set RXDATA low (is this necessary?)
-	P2DIR &= ~RXDATA; // RXDATA is an input
-
+#ifdef TX_ENABLED
 	P1OUT &= ~TXMOD;		// set TXMOD low
 	P1DIR |= TXMOD;		// TXDATA is an output
+	P1OUT &= ~CNTRL1;		// send T/R low for transmit
+	P1DIR |= CNTRL1;		// control T/R is an output
+#endif
 
-    // set up timer a3 to get interrupted by P2.0 and P2.1
-    P2SEL |= BIT0 + BIT1;
-    P2SEL2 &= ~(BIT0 + BIT1);
+#ifdef RX_ENABLED
+	P2DIR &= ~RXDATA_20;// RXDATA is an input
+	P2DIR &= ~RXDATA_21;// RXDATA is an input
+
+	P1OUT &= ~CNTRL1;// send T/R low for transmit
+	P1DIR |= CNTRL1;// control T/R is an output
+
+	// set up timer a3 to get interrupted by P2.0 and P2.1
+	P2SEL |= BIT0 + BIT1;
+	P2SEL2 &= ~(BIT0 + BIT1);
+#endif
 
 	// set up test points
 	// P2.2 (U12), P2.5 (U11), P2.4 (U13), P2.3 (U14)
@@ -87,12 +92,12 @@ void main(void) {
 	WDTCTL = WDTHOLD + WDTPW;
 
 	InitTRXHardware();
-    #ifdef TX_ENABLED
-	   InitTXVariables();
-    #endif
-    #ifdef RX_ENABLED
-        InitRXVariables();
-    #endif
+#ifdef TX_ENABLED
+	InitTXVariables();
+#endif
+#ifdef RX_ENABLED
+	InitRXVariables();
+#endif
 
 	//Enable Global Interrupts after all intializing is done.
 	_EINT();
@@ -100,7 +105,7 @@ void main(void) {
 
 	while (1) { //Main code loop here :
 #ifdef RX_ENABLED
-		rcv(); //Call the receiver
+	rcv(); //Call the receiver
 #endif
 	}
 }

@@ -102,7 +102,7 @@ void rcv(void){
                     else {
                         if (PWidth == Valid_FullBit) {    // Rising Edge at mid-bit , clock in a 1
                             Rcv1.CurrentRecvdData <<= 1 ; // Room for new bit
-                            Rcv1.CurrentRecvdData |= 0x01 ;
+                            Rcv1.CurrentRecvdData |= 0x01;
                             --Rcv1.BitsLeftToGet ;
                             if (Rcv1.BitsLeftToGet == 0){ //All done Start over
                                 Rcv1.LastValidReceived = Rcv1.CurrentRecvdData ; //Buffer up last received value
