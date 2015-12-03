@@ -5,6 +5,7 @@
  * rx.c
 */
 #include "rx.h"
+#include "tx.h"
 
 ManchesterReceiver Rcv1 ;
 Event_Queue Receiver_Events ;

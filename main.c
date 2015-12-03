@@ -17,7 +17,8 @@
 #include "tx.h"
 #include "radio_trx_header_board.h"
 
-//define TX_ENABLED      // Enable Transmit feature at compile time
+
+//#define TX_ENABLED      // Enable Transmit feature at compile time
 #define RX_ENABLED    // Enable Receive feature at compile time
 
 #ifdef RX_ENABLED
@@ -93,7 +94,9 @@ void main(void) {
 
 	InitTRXHardware();
 #ifdef TX_ENABLED
-	InitTXVariables();
+	// InitTXVariables(0x10000000); // expect signal to look like 0010 0000 0000 0000 0000 0000 0000 0001 = 0x20000001
+    // InitTXVariables(0x30000000); // expect signal to look like 0110 0000 0000 0000 0000 0000 0000 0000 = 0x60000000
+    InitTXVariables(0x40000000); // expect signal to look like 1000 0000 0000 0000 0000 0000 0000 0001 = 0x80000001
 #endif
 #ifdef RX_ENABLED
 	InitRXVariables();
