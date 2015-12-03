@@ -97,8 +97,8 @@ void Xmit(void) {
 void InitTXVariables(void) {
 	//Here is an example:
 	Xmit1.Bits_Remaining = BITS_IN_TRANSMISSION;
-	Xmit1.Transmit_Data_Buffer = 0xDADDADDA;  //
-	Xmit1.Transmit_Data = 0xDADDADDA; //This is just sample data, the final application Determines what is to be sent.
+	Xmit1.Transmit_Data_Buffer = 0xDEADBEEF;  //
+	Xmit1.Transmit_Data = 0xDEADBEEF; //This is just sample data, the final application Determines what is to be sent.
 	Xmit1.Transmit_Clock_Phase = Low;
 	Xmit1.Transmitter_State = StartBit;
 	Xmit1.InterwordTimeout = INTERWORD_DELAY;
