@@ -119,6 +119,9 @@ void main(void) {
 	while (1) { //Main code loop here :
 #ifdef RX_ENABLED
 	rcv(); //Call the receiver
+
+
+
 #endif
     }
 }
