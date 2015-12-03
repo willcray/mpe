@@ -105,8 +105,13 @@ void rcv(void){
                             Rcv1.CurrentRecvdData |= 0x01;
                             --Rcv1.BitsLeftToGet ;
                             if (Rcv1.BitsLeftToGet == 0){ //All done Start over
-                                Rcv1.LastValidReceived = Rcv1.CurrentRecvdData ; //Buffer up last received value
-                                Rcv1.CurrentRcvState = Initial_Expect_Rising ;
+
+                            	if(countOnes(Rcv1.CurrentRecvdData) % 2){
+
+                            	}else{
+                            		Rcv1.LastValidReceived = Rcv1.CurrentRecvdData ; //Buffer up last received value
+                            	}
+								Rcv1.CurrentRcvState = Initial_Expect_Rising ;
                             }
                             else {
                                 Rcv1.MidBitTimeStamp = Rcv1.RisingEdgeTimeStamp ; //New mark for mid-bit
