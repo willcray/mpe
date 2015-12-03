@@ -112,7 +112,6 @@ void main(void) {
 	}
 #endif
 	}
-}
 
 // Interrupt Handlers
 #pragma vector=TIMER0_A0_VECTOR
