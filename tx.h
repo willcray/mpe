@@ -28,6 +28,7 @@ enum Transmit_States {StartBit,NormalXmit,InterWord} ;
 enum XmitClockPhase  {High,Low} ;
 
 typedef struct {
+	unsigned long		 Message			   ;  //This is data without the parity bit
     unsigned long        Transmit_Data         ;  //This is the data to actually be transmitted
     unsigned long        Transmit_Data_Buffer  ;  //This should be reloaded any time we wish to change what is transmitted.
     unsigned int         Bits_Remaining        ;  //This is the number of bits remaining in the current transmission
@@ -47,7 +48,7 @@ extern TransmitterData Xmit1 ;  //This declares an instance of the transmitter d
 // Function Prototypes Section
 // ************************************************************************************
 void Xmit(void) ; //This routine is called every 500 uS by an interrupt handler.
-void InitTXVariables(long data); //All Global Variables are set up by this
+void InitTXVariables(); //All Global Variables are set up by this
 void txinthandler(void);
 
 // ************************************************************************************************

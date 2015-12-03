@@ -81,7 +81,7 @@ void Xmit(void) {
 			P1OUT &= ~TXMOD;	// send the data low during interword
 			Xmit1.InterwordTimeout--;
 			if (Xmit1.InterwordTimeout == 0){
-				InitTXVariables(Xmit1.Transmit_Data);      // reinitialize TransmissionData variables
+				InitTXVariables();      // reinitialize TransmissionData variables
 			}
 
 		break;
@@ -94,15 +94,9 @@ void Xmit(void) {
 		
 	}
 }
-void InitTXVariables(long data) {
-	if (data >> 31 & 0x1) {
-		// BAD SEND, MSB is 1 aka the long won't fit with a parity bit at the end
-	} else {
-		int parityBit = countOnes(data) % 2;
 
-		Xmit1.Transmit_Data = (data << 1) | parityBit;
-		Xmit1.Transmit_Data_Buffer = Xmit1.Transmit_Data;
-	}
+void InitTXVariables() {
+	Xmit1.Transmit_Data_Buffer = Xmit1.Transmit_Data;
 
 	//Here is an example:
 	Xmit1.Bits_Remaining = BITS_IN_TRANSMISSION;

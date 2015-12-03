@@ -94,9 +94,19 @@ void main(void) {
 
 	InitTRXHardware();
 #ifdef TX_ENABLED
-	// InitTXVariables(0x10000000); // expect signal to look like 0010 0000 0000 0000 0000 0000 0000 0001 = 0x20000001
+
+    long messageToSend = 0x40000000; // can't have 1 in msb
+    Xmit1.Message = messageToSend;
+    int parityBit = countOnes(messageToSend) % 2;
+    Xmit1.Transmit_Data = ((messageToSend << 1) | parityBit);
+    Xmit1.Transmit_Data_Buffer = Xmit1.Transmit_Data;
+    
+    InitTXVariables();
+
+    // InitTXVariables(0x10000000); // expect signal to look like 0010 0000 0000 0000 0000 0000 0000 0001 = 0x20000001
     // InitTXVariables(0x30000000); // expect signal to look like 0110 0000 0000 0000 0000 0000 0000 0000 = 0x60000000
-    InitTXVariables(0x40000000); // expect signal to look like 1000 0000 0000 0000 0000 0000 0000 0001 = 0x80000001
+    // InitTXVariables(0x0EABBEEF); // expect signal to look like 0001 1101 0101 0111 0111 1101 1101 1111 = 0x1D577DDF
+    // expect signal to look like 1000 0000 0000 0000 0000 0000 0000 0001 = 0x80000001
 #endif
 #ifdef RX_ENABLED
 	InitRXVariables();
