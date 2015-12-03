@@ -1,126 +1,124 @@
 /*
- * Ben Browning and Will Cray
- */
-/*
  * rx.c
  */
+// **************************************************************************************
+// Includes Section
+// ************************************************************************************
+#include <msp430.h>
 #include "rx.h"
 
 ManchesterReceiver Rcv1;
 Event_Queue Receiver_Events;
+// ************************************************************************************************
 
 void rxinthandler(void) {
-	// If you want something to happen for the receiver every 500us, you can do it here.
+	/// If you want something to happen for the receiver every 500us, you can do it here.
 
 }
 
-void rcv(void){
-    int index ;
-    PulseWidthStatus PWidth ;
-    unsigned int CurrentTime ;
-    Event_Que_Entry Current_Event ;
-    CurrentTime = TA1R ; // Get the approximate current timestamp.
-    if ((CurrentTime - Rcv1.LastEdgeTimeStamp) > MISSING_EDGE_TIMEOUT ){//Here we have had no transmissions in a while
-        Rcv1.CurrentRcvState = Initial_Expect_Rising ;
-    }
-    index = GetEvent() ;
-    if (index != -1 ) { //Here we have an edge to deal with, -1 indicates no event in queue
-        Current_Event.Edge = Receiver_Events.Events[(unsigned int)index].Edge ;
-        Current_Event.TimeStamp = Receiver_Events.Events[(unsigned int)index].TimeStamp ;
-        //Now insert receiver state machine here
-        Rcv1.LastEdgeTimeStamp = Current_Event.TimeStamp ; //This marks the last time that we got any time stamp at all
-        switch (Rcv1.CurrentRcvState){
-            // Ignore transitions until we get a rising one.
-            case Initial_Expect_Rising :
-                if (Current_Event.Edge == Rising) { //Leading edge of initial lead-in bit
-                    Rcv1.CurrentRcvState = Initial_Expect_Falling ;
-                    Rcv1.RisingEdgeTimeStamp = Current_Event.TimeStamp ;
-                }
-            break ;
-            case Initial_Expect_Falling :
-                if (Current_Event.Edge == Rising){
-                    Rcv1.CurrentRcvState = Initial_Expect_Rising ; //Out of sequence start over
-                }
-                else {
-                    Rcv1.FallingEdgeTimeStamp = Current_Event.TimeStamp ;  //Figure out when it happens
-                    Rcv1.PulseWidth = Rcv1.FallingEdgeTimeStamp - Rcv1.RisingEdgeTimeStamp ; // And Test validity
-                    PWidth = TestWidth(Rcv1.PulseWidth) ;
-                    if (PWidth == Valid_FullBit) { //Here we have a valid full initial bit
-                        Rcv1.CurrentRecvdData = 0 ; // Start all over for receiver
-                        Rcv1.MidBitTimeStamp = Rcv1.FallingEdgeTimeStamp ; // By definition at mid bit....
-                        Rcv1.BitsLeftToGet = BITS_IN_TRANSMISSION ;
-                        Rcv1.CurrentRcvState = MidBit_Expect_Rising ; //Next bit is start of "real" data
-                    }
-                    else Rcv1.CurrentRcvState = Initial_Expect_Rising ; //Likely a noise pulse, start over
-                }
-            break ;
-            case MidBit_Expect_Falling :
-                if (Current_Event.Edge == Rising) { //Out of sequence - start over
-                    Rcv1.CurrentRcvState = Initial_Expect_Rising ;
-                }
-                else {
-                    Rcv1.FallingEdgeTimeStamp = Current_Event.TimeStamp ;
-                    Rcv1.PulseWidth = Rcv1.FallingEdgeTimeStamp - Rcv1.MidBitTimeStamp ; // Get width relative to last mid-bit
-                    PWidth = TestWidth(Rcv1.PulseWidth) ;
-                    if (PWidth == Valid_HalfBit) { //Here we have a half-bit, phasing transition
-                        Rcv1.CurrentRcvState = MidBit_Expect_Rising ; // Got to expect a rising edge at mid-bit
-                    }
-                    else {
-                        if (PWidth == Valid_FullBit) {    // Rising Edge at mid-bit , clock in a 1
-                            Rcv1.CurrentRecvdData <<= 1 ; // Room for new bit
-                            --Rcv1.BitsLeftToGet ;
-                            if (Rcv1.BitsLeftToGet == 0){ //All done Start over
-                                Rcv1.LastValidReceived = Rcv1.CurrentRecvdData ; //Buffer up last received value
-                                Rcv1.CurrentRcvState = Initial_Expect_Rising ;
-                            }
-                            else {
-                                Rcv1.MidBitTimeStamp = Rcv1.FallingEdgeTimeStamp ; //New mark for mid-bit
-                                Rcv1.CurrentRcvState = MidBit_Expect_Rising    ; //And Expect a rising edge
-                            }
-                        }
-                        else{
-                            Rcv1.CurrentRcvState = Initial_Expect_Rising ; // Bad pulse width
-                        }
-                    }
-                }
-            break ;
-            //We arrived here from a valid mid-bit transition previously
-            case MidBit_Expect_Rising :
-                if (Current_Event.Edge == Falling) { //Out of sequence - start over
-                    Rcv1.CurrentRcvState = Initial_Expect_Rising ;
-                }
-                else {
-                    Rcv1.RisingEdgeTimeStamp = Current_Event.TimeStamp ;
-                    Rcv1.PulseWidth = Rcv1.RisingEdgeTimeStamp - Rcv1.MidBitTimeStamp ; // Get width relative to last mid-bit
-                    PWidth = TestWidth(Rcv1.PulseWidth) ;
-                    if (PWidth == Valid_HalfBit) { //Here we have a half-bit, phasing transition
-                        Rcv1.CurrentRcvState = MidBit_Expect_Falling ; // Got to expect a falling edge at mid-bit
-                    }
-                    else {
-                        if (PWidth == Valid_FullBit) {    // Rising Edge at mid-bit , clock in a 1
-                            Rcv1.CurrentRecvdData <<= 1 ; // Room for new bit
-                            Rcv1.CurrentRecvdData |= 0x01;
-                            --Rcv1.BitsLeftToGet ;
-                            if (Rcv1.BitsLeftToGet == 0){ //All done Start over
-                                Rcv1.LastValidReceived = Rcv1.CurrentRecvdData ; //Buffer up last received value
-                                Rcv1.CurrentRcvState = Initial_Expect_Rising ;
-                            }
-                            else {
-                                Rcv1.MidBitTimeStamp = Rcv1.RisingEdgeTimeStamp ; //New mark for mid-bit
-                                Rcv1.CurrentRcvState = MidBit_Expect_Falling    ; //And Expect a falling edge
-                            }
-                        }
-                        else{
-                            Rcv1.CurrentRcvState = Initial_Expect_Rising ; // Bad pulse width
-                        }
-                    }
-                }
-            break ;
-            default:
-                Rcv1.CurrentRcvState = Initial_Expect_Rising ;
-            break ;
-        }
-    }
+//This should be called Frequently from the main loop.
+void rcv(void) {
+	int index;
+	PulseWidthStatus PWidth;
+	unsigned int CurrentTime;
+	Event_Que_Entry Current_Event;
+	CurrentTime = TA1R; //Get the approximate current timestamp.
+	if ((CurrentTime - Rcv1.LastEdgeTimeStamp) > MISSING_EDGE_TIMEOUT) { //Here we have had no transmissions in a while
+		Rcv1.CurrentRcvState = Initial_Expect_Rising;
+	}
+	index = GetEvent();
+	if (index != -1) { //Here we have an edge to deal with, -1 indicates no event in queue
+		Current_Event.Edge = Receiver_Events.Events[(unsigned int) index].Edge;
+		Current_Event.TimeStamp =
+				Receiver_Events.Events[(unsigned int) index].TimeStamp;
+		//Now insert receiver state machine here
+		Rcv1.LastEdgeTimeStamp = Current_Event.TimeStamp; //This marks the last time that we got any time stamp at all
+		switch (Rcv1.CurrentRcvState) {
+		// Ignore transitions until we get a rising one.
+		case Initial_Expect_Rising:
+			if (Current_Event.Edge == Rising) { //Leading edge of initial lead-in bit
+				Rcv1.CurrentRcvState = Initial_Expect_Falling;
+				Rcv1.RisingEdgeTimeStamp = Current_Event.TimeStamp;
+			}
+			break;
+		case Initial_Expect_Falling:
+			if (Current_Event.Edge == Rising) {
+				Rcv1.CurrentRcvState = Initial_Expect_Rising; //Out of sequence start over
+			} else {
+				Rcv1.FallingEdgeTimeStamp = Current_Event.TimeStamp; //Figure out when it happens
+				Rcv1.PulseWidth = Rcv1.FallingEdgeTimeStamp
+						- Rcv1.RisingEdgeTimeStamp; // And Test validity
+				PWidth = TestWidth(Rcv1.PulseWidth);
+				if (PWidth == Valid_FullBit) { //Here we have a valid full initial bit
+					Rcv1.CurrentRecvdData = 0; // Start all over for receiver
+					Rcv1.MidBitTimeStamp = Rcv1.FallingEdgeTimeStamp; // By definition at mid bit....
+					Rcv1.BitsLeftToGet = BITS_IN_TRANSMISSION;
+					Rcv1.CurrentRcvState = MidBit_Expect_Rising; //Next bit is start of "real" data
+				} else
+					Rcv1.CurrentRcvState = Initial_Expect_Rising; //Likely a noise pulse, start over
+			}
+			break;
+		case MidBit_Expect_Falling:
+			if (Current_Event.Edge == Rising) { //Out of sequence - start over
+				Rcv1.CurrentRcvState = Initial_Expect_Rising;
+			} else {
+				Rcv1.FallingEdgeTimeStamp = Current_Event.TimeStamp;
+				Rcv1.PulseWidth = Rcv1.FallingEdgeTimeStamp
+						- Rcv1.MidBitTimeStamp; // Get width relative to last mid-bit
+				PWidth = TestWidth(Rcv1.PulseWidth);
+				if (PWidth == Valid_HalfBit) { //Here we have a half-bit, phasing transition
+					Rcv1.CurrentRcvState = MidBit_Expect_Rising; // Got to expect a rising edge at mid-bit
+				} else {
+					if (PWidth == Valid_FullBit) { // Rising Edge at mid-bit , clock in a 1
+						Rcv1.CurrentRecvdData <<= 1; // Room for new bit
+						--Rcv1.BitsLeftToGet;
+						if (Rcv1.BitsLeftToGet == 0) { //All done Start over
+							Rcv1.LastValidReceived = Rcv1.CurrentRecvdData; //Buffer up last received value
+							Rcv1.CurrentRcvState = Initial_Expect_Rising;
+						} else {
+							Rcv1.MidBitTimeStamp = Rcv1.FallingEdgeTimeStamp; //New mark for mid-bit
+							Rcv1.CurrentRcvState = MidBit_Expect_Rising; //And Expect a rising edge
+						}
+					} else {
+						Rcv1.CurrentRcvState = Initial_Expect_Rising; // Bad pulse width
+					}
+				}
+			}
+			break;
+			//We arrived here from a valid mid-bit transition previously
+		case MidBit_Expect_Rising:
+			if (Current_Event.Edge == Falling) { //Out of sequence - start over
+				Rcv1.CurrentRcvState = Initial_Expect_Rising;
+			} else {
+				Rcv1.RisingEdgeTimeStamp = Current_Event.TimeStamp;
+				Rcv1.PulseWidth = Rcv1.RisingEdgeTimeStamp
+						- Rcv1.MidBitTimeStamp; // Get width relative to last mid-bit
+				PWidth = TestWidth(Rcv1.PulseWidth);
+				if (PWidth == Valid_HalfBit) { //Here we have a half-bit, phasing transition
+					Rcv1.CurrentRcvState = MidBit_Expect_Falling; // Got to expect a falling edge at mid-bit
+				} else {
+					if (PWidth == Valid_FullBit) { // Rising Edge at mid-bit , clock in a 1
+						Rcv1.CurrentRecvdData <<= 1; // Room for new bit
+						Rcv1.CurrentRecvdData |= 0x01;
+						--Rcv1.BitsLeftToGet;
+						if (Rcv1.BitsLeftToGet == 0) { //All done Start over
+							Rcv1.LastValidReceived = Rcv1.CurrentRecvdData; //Buffer up last received value
+							Rcv1.CurrentRcvState = Initial_Expect_Rising;
+						} else {
+							Rcv1.MidBitTimeStamp = Rcv1.RisingEdgeTimeStamp; //New mark for mid-bit
+							Rcv1.CurrentRcvState = MidBit_Expect_Falling; //And Expect a falling edge
+						}
+					} else {
+						Rcv1.CurrentRcvState = Initial_Expect_Rising; // Bad pulse width
+					}
+				}
+			}
+			break;
+		default:
+			Rcv1.CurrentRcvState = Initial_Expect_Rising;
+			break;
+		}
+	}
 
 }
 
@@ -186,16 +184,7 @@ PulseWidthStatus TestWidth(unsigned int CurrentPulse) {
 	return rval;
 }
 
-//This called by the capture routine on the rising edge of the input signal
-void risingedge(void) {
-	InsertEvent(Rising, TA1CCR0);    //Insert this event into event Queue
-}
-
-void fallingedge(void) {
-	InsertEvent(Falling, TA1CCR1); //Insert this event into event Queue.
-}
-
-void InitRXVariables(void) {
+void InitRXVariables() {
 	//etc. .....
 	Receiver_Events.Get_Index = 0;
 	Receiver_Events.Put_index = 0;
@@ -212,3 +201,11 @@ void InitRXVariables(void) {
 	Rcv1.LastValidReceived = 0;
 }
 
+//This called by the capture routine on the rising edge of the input signal
+void risingedge(void) {
+	InsertEvent(Rising, TA1CCR0);    //Insert this event into event Queue
+}
+
+void fallingedge(void) {
+	InsertEvent(Falling, TA1CCR1); //Insert this event into event Queue.
+}
