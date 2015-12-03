@@ -95,12 +95,12 @@ void main(void) {
 	InitTRXHardware();
 #ifdef TX_ENABLED
 
-    long messageToSend = 0x40000000; // can't have 1 in msb
+    long messageToSend = 0x55378008; // can't have 1 in msb
     Xmit1.Message = messageToSend;
     int parityBit = countOnes(messageToSend) % 2;
     Xmit1.Transmit_Data = ((messageToSend << 1) | parityBit);
     Xmit1.Transmit_Data_Buffer = Xmit1.Transmit_Data;
-    
+
     InitTXVariables();
 
     // InitTXVariables(0x10000000); // expect signal to look like 0010 0000 0000 0000 0000 0000 0000 0001 = 0x20000001
